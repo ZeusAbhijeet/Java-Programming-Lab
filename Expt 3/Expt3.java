@@ -1,67 +1,54 @@
-package expt3;
+package experiment3;
 import java.util.Scanner;
 
-interface Teacher {
-    void teach();
-}
+class EnrollmentThread extends Thread {
+    private String studentName;
+    private String courseName;
+    private int studentAge;
+    private String studentAddress;
 
-interface Student {
-    void learn();
-}
-
-interface Administrator {
-    void manage();
-}
-
-class CollegeStudent implements Teacher, Student, Administrator {
-    @Override
-    public void teach() {
-        System.out.println("Teaching");
+    public EnrollmentThread(String sName, String cName, int sAge, String sAdd) {
+        this.studentName = sName;
+        this.courseName = cName;
+        this.studentAge = sAge;
+        this.studentAddress = sAdd;
     }
 
     @Override
-    public void learn() {
-        System.out.println("Learning");
-    }
-
-    @Override
-    public void manage() {
-        System.out.println("Managing");
+    public void run() {
+        System.out.println("Enrolling " + studentName + " in " + courseName + "....");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("ERROR: Student enrollment failed with exception: " + e.getMessage());
+        }
+        System.out.println("Student " + studentName + " successfully enrolled to " + courseName);
     }
 }
 
 public class Expt3 {
     public static void main(String[] args) {
-        CollegeStudent cs1 = new CollegeStudent();
+        EnrollmentThread[] et = new EnrollmentThread[5];
         Scanner sc = new Scanner(System.in);
-        int ch;
+        String sName, cName, sAddress;
+        int sAge;
 
-        do {
-            System.out.println("1. Teach");
-            System.out.println("2. Learn");
-            System.out.println("3. Manage");
-            System.out.println("4. Exit");
-            System.out.print("Enter your choice: ");
+        for (int i = 0; i < 5; i++) {
+            System.out.print("\nEnter Student age: ");
+            sAge = sc.nextInt();
+            sc.nextLine();
+            System.out.print("Enter Student name: ");
+            sName = sc.nextLine();
+            System.out.print("Enter Student address: ");
+            sAddress = sc.nextLine();
+            System.out.print("Enter Course name: ");
+            cName = sc.nextLine();
+            et[i] = new EnrollmentThread(sName, cName, sAge, sAddress);
+        }
+        System.out.println();
 
-            ch = sc.nextInt();
-
-            switch (ch) {
-                case 1:
-                    cs1.teach();
-                    break;
-                case 2:
-                    cs1.learn();
-                    break;
-                case 3:
-                    cs1.manage();
-                    break;
-                case 4:
-                    System.out.println("Exit");
-                    break;
-                default:
-                    System.out.println("Invalid choice");
-            }
-        } while (ch != 4);
+        for (int i = 0; i < 5; i++)
+            et[i].start();
 
         sc.close();
     }
